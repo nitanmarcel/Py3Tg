@@ -22,3 +22,4 @@ Execute python3 code directly from telegram using a docker sandbox. The bot can 
   - realtime: Real time in seconds, `null` for unlimited.
   - memory: Memory in megabytes, `null` for unlimited
   - processes: Limit the max processes the sandbox can have. `-1` or `null` for unlimited.
+  - file_size: Limit the size of created files.
