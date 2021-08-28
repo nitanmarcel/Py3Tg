@@ -12,7 +12,7 @@
             "memory": 64,
             "realtime": 1,
             "processes": 1,
-            "file_size" = 1
+            "file_size": 1
         }
     },
     "example": {
