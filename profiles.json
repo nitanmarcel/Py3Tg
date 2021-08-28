@@ -1,0 +1,29 @@
+// list of profiles and their limits.
+// use the default profile as a reference, do not edit it's name (default) but you can edit it's values.
+// In your new profile replace default with the user id as a string key to which the respective profile belongs to.
+{
+    "default": {
+        "profile": {
+            "user": "sandbox",
+            "network_disabled": true
+        },
+        "limits": {
+            "cputime": 1,
+            "memory": 64,
+            "realtime": 1,
+            "processes": 1
+        }
+    },
+    "example": {
+        "profile": {
+            "user": "sandbox or root",
+            "network_disabled": true
+        },
+        "limits": {
+            "cputime": 2,
+            "memory": 54,
+            "realtime": 2,
+            "processes": 2
+        }
+    }
+}

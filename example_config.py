@@ -1,0 +1,3 @@
+API_ID = 0
+API_HASH = 'abc'
+BOT_TOKEN = '1234:ABCD'
