@@ -83,14 +83,14 @@ async def main():
 
         @client.on(events.NewMessage(outgoing=False, incoming=True, pattern=start_regex))
         async def _start(event):
-            await event.reply('Use `/exec <python-code-here>` to give me some python code to execute.')
+            await event.reply(f'Use <code>/exec {html.escape("<python-code-here>")}</code> to give me some python code to execute.')
 
         @client.on(events.NewMessage(outgoing=False, incoming=True, pattern=exec_regex))
         async def _exec(event):
             msg = event.message
             code = event.pattern_match.group(1)
             if not code:
-                await event.reply('Use `/exec <python-code-here>` to give me some python code to execute.')
+                await event.reply(f'Use <code>/exec {html.escape("<python-code-here>")}</code> to give me some python code to execute.')
                 return
             code = code.lstrip()
             stats_id = str(msg.id) + str(event.chat_id)
