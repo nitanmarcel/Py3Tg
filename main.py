@@ -21,7 +21,7 @@ client.parse_mode = 'html'
 loop = asyncio.get_event_loop()
 thread_pool = ThreadPoolExecutor(max_workers=None)
 
-with open("profiles.json", "r+") as profile_js:
+with open('profiles.json', 'r+') as profile_js:
     jsondata = ''.join(
         line for line in profile_js if not line.startswith('//'))
     profiles = json.loads(jsondata)
@@ -50,8 +50,8 @@ def _format_result(result):
 
     success = stdout and not stderr or not timeout and not oom_killed
 
-    result_template = "<b>Result:</b>\n<pre>{result}</pre>"
-    error_template = "<b>Error:</b>\n<pre>{error}</pre>"
+    result_template = '<b>Result:</b>\n<pre>{result}</pre>'
+    error_template = '<b>Error:</b>\n<pre>{error}</pre>'
 
     if stdout and not stderr:
         stdout = result_template.format(result=html.escape(stdout))
@@ -102,7 +102,11 @@ async def main():
             stats[stats_id] = {'exit_code': exit_code, 'duration': duration,
                                'timeout': timeout, 'oom_killed': oom_killed}
 
-            await event.reply(f'<b>Code:</b>\n<pre>{code}</pre>\n\n' + parsed_result, buttons=[Button.inline('Stats', data=stats_id)])
+            result = f'<b>Code:</b>\n<pre>{code}</pre>\n\n' + parsed_result
+            if len(result) < 4096:
+                await event.reply(result, buttons=[Button.inline('Stats', data=stats_id)])
+            else:
+                await event.reply('Error: Message length exceeded telegram\'s limits.')
 
         @client.on(events.InlineQuery())
         async def _inline_exec(event):
@@ -118,24 +122,33 @@ async def main():
 
                 builder = event.builder
 
-                await event.answer([
-                    builder.article("Success" if status else "Error", text=f'<b>Code:</b>\n<pre>{code}</pre>\n\n' + parsed_result, buttons=[
-                                    Button.inline('Stats', data=stats_id)], parse_mode='html')
-                ],
-                    cache_time=0)
+                result = f'<b>Code:</b>\n<pre>{code}</pre>\n\n' + parsed_result
+
+                if len(result) < 4096:
+                    await event.answer([
+                        builder.article('Success' if status else 'Error', text=result, buttons=[
+                                        Button.inline('Stats', data=stats_id)], parse_mode='html')
+                    ],
+                        cache_time=0)
+                else:
+                    await event.answer([
+                        builder.article('Message length exceeded telegram\'s limits.', text='Error: Message length exceeded telegram\'s limits.', buttons=[
+                                        Button.inline('Stats', data=stats_id)], parse_mode='html')
+                    ],
+                        cache_time=0)
 
         @client.on(events.CallbackQuery())
         async def _stats(event):
             data = event.data.decode()
             if data in stats.keys():
                 stats_ = stats[data]
-                stats_msg = ""
+                stats_msg = ''
                 for k, v in stats_.items():
-                    stats_msg += k.replace("_", " ").title() + \
-                        ": " + str(v) + "\n"
+                    stats_msg += k.replace('_', ' ').title() + \
+                        ': ' + str(v) + '\n'
                 await event.answer(stats_msg, cache_time=0, alert=True)
 
         await client.run_until_disconnected()
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     loop.run_until_complete(main())
