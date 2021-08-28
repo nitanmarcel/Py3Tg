@@ -19,6 +19,6 @@ Execute python3 code directly from telegram using a docker sandbox. The bot can 
   - user: What user will the code executed by an user will be used inside the docker container. It can be `sandbox` or `root`.
   - network_disabled: Either if the container will have access to a network connection or not.
   - cputime: CPU time in seconds, `null` for unlimited.
-  - realtime: Real time in seconds, `null for unlimited.
+  - realtime: Real time in seconds, `null` for unlimited.
   - memory: Memory in megabytes, `null` for unlimited
-  - processes: Limit the max processes the sandbox can have. -1 or `null` for unlimited.
+  - processes: Limit the max processes the sandbox can have. `-1` or `null` for unlimited.
