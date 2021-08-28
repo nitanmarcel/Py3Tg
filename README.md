@@ -1,6 +1,7 @@
 # Py3Tg
 Execute python3 code directly from telegram using a docker sandbox. The bot can be found on telegram [here](t.me/py3tg_bot) but you can also self host it using the instructions below.
 
+# WARNING ⚠️: I'm not responsible if your system gets destroyed somehow while self hosting this bot. In theory this should be secured as long as you don't give root permissions to random telegram users in the `profiles.json` file. Docker still has it's flaws, make sure you're running this on a vps where you have nothing to lose,  don't connect to your vps as a root user or any user that doesn't have a sudo password.
 ### Self Hosting
 
 * Requirements
