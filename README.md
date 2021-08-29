@@ -16,7 +16,7 @@ Execute python3 code directly from telegram using a docker sandbox. The bot can 
   - run the bot using `python3 main.py`
   
 * Configure profiles/permissions
-- All the profiles and user permissions inside the docker container are controlled by the `profiles.json` file:
+- All the profiles and user permissions inside the docker container are controlled by the `profiles.json` file. Copy the `profiles_example.json` file to `profiles.json` and edit it to your liking:
   - user: What user will the code executed by an user will be used inside the docker container. It can be `sandbox` or `root`.
   - network_disabled: Either if the container will have access to a network connection or not.
   - cputime: CPU time in seconds, `null` for unlimited.

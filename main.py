@@ -3,6 +3,7 @@ import html
 import json
 import logging
 import re
+import os
 import epicbox
 
 from concurrent.futures import ThreadPoolExecutor
@@ -21,10 +22,19 @@ client.parse_mode = 'html'
 loop = asyncio.get_event_loop()
 thread_pool = ThreadPoolExecutor(max_workers=None)
 
-with open('profiles.json', 'r+') as profile_js:
+
+profiles_json_source = 'profiles.json'
+if not os.path.isfile(profiles_json_source):
+    profiles_json_source = 'profiles_example.json'
+
+with open(profiles_json_source, 'r+') as profile_js:
     jsondata = ''.join(
         line for line in profile_js if not line.startswith('//'))
     profiles = json.loads(jsondata)
+    if profiles_json_source.split("_", 1)[-1] == 'example.json':
+        profiles = {'default': profiles['default']}
+
+print(profiles)
 
 
 epicbox.configure(
