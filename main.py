@@ -6,6 +6,8 @@ import re
 import os
 import epicbox
 
+import urllib.request
+
 from concurrent.futures import ThreadPoolExecutor
 from functools import partial
 from config import API_HASH, API_ID, BOT_TOKEN, MAX_CONTAINERS
@@ -13,7 +15,17 @@ from telethon import TelegramClient, events
 from telethon.tl.custom import Button
 
 logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
+dockerfile_raw_url = "https://raw.githubusercontent.com/nitanmarcel/Py3Tg/main/Dockerfile"
+
+r = urllib.request.urlopen(dockerfile_raw_url)
+remote_dockerfile = r.read()
+
+with open("Dockerfile", "r") as dockerfile:
+    if hash(dockerfile.read()) != hash(remote_dockerfile):
+        logger.error("Current Dockerfile not the same as the one in the github repo. To continue update the Dockerfile by pulling the latest changes and rebuild the container.")
+        quit(0)
 
 client = TelegramClient(None, API_ID, API_HASH)
 client.parse_mode = 'html'
