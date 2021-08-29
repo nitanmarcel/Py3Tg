@@ -48,7 +48,7 @@ def _format_result(result):
     timeout = result['timeout']
     oom_killed = result['oom_killed']
 
-    success = stdout and not stderr or not timeout and not oom_killed
+    success = stdout and not stderr and not timeout and not oom_killed
 
     result_template = '<b>Result:</b>\n<pre>{result}</pre>'
     error_template = '<b>Error:</b>\n<pre>{error}</pre>'
