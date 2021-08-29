@@ -48,7 +48,7 @@ async def _uexec(code, profile='default'):
     files = [{'name': 'main.py', 'content': str.encode(code)}]
     if profile not in profiles.keys():
         profile = 'default'
-    result = await loop.run_in_executor(executor=thread_pool, func=partial(epicbox.run, profile, 'pypy3 main.py || python main.py', files=files, limits=profiles[profile]['limits']))
+    result = await loop.run_in_executor(executor=thread_pool, func=partial(epicbox.run, profile, 'if type pypy3 >/dev/null 2>&1; then pypy3 main.py; else python main.py; fi', files=files, limits=profiles[profile]['limits']))
     return result
 
 
@@ -67,7 +67,8 @@ def _format_result(result):
     timeout = result['timeout']
     oom_killed = result['oom_killed']
 
-    success = stdout and not stderr and not timeout and not oom_killed
+    success = stdout or not any(
+        (stderr, timeout, oom_killed,))
 
     result_template = '<b>Result:</b>\n<pre>{result}</pre>'
     error_template = '<b>Error:</b>\n<pre>{error}</pre>'
@@ -115,7 +116,7 @@ async def main():
             stats_id = str(msg.id) + str(event.chat_id)
 
             result = await uexec(code, profile=str(event.sender_id))
-            parsed_result, status, duration,  exit_code, duration, timeout, oom_killed = _format_result(
+            parsed_result, status, duration, exit_code, duration, timeout, oom_killed = _format_result(
                 result)
 
             stats[stats_id] = {'exit_code': exit_code, 'duration': duration,
