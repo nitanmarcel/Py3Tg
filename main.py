@@ -48,14 +48,16 @@ async def _uexec(code, profile='default'):
     files = [{'name': 'main.py', 'content': str.encode(code)}]
     if profile not in profiles.keys():
         profile = 'default'
-    result = await loop.run_in_executor(executor=thread_pool, func=partial(epicbox.run, profile, 'pypy3 main.py', files=files, limits=profiles[profile]['limits']))
+    result = await loop.run_in_executor(executor=thread_pool, func=partial(epicbox.run, profile, 'pypy3 main.py || python main.py', files=files, limits=profiles[profile]['limits']))
     return result
+
 
 async def uexec(code, profile='default'):
     if semaphore:
         async with semaphore:
             return await _uexec(code, profile)
     return await _uexec(code, profile)
+
 
 def _format_result(result):
     stdout = result['stdout'].decode()
