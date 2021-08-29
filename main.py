@@ -8,7 +8,7 @@ import epicbox
 
 from concurrent.futures import ThreadPoolExecutor
 from functools import partial
-from config import API_HASH, API_ID, BOT_TOKEN
+from config import API_HASH, API_ID, BOT_TOKEN, MAX_CONTAINERS
 from telethon import TelegramClient, events
 from telethon.tl.custom import Button
 
@@ -22,6 +22,10 @@ client.parse_mode = 'html'
 loop = asyncio.get_event_loop()
 thread_pool = ThreadPoolExecutor(max_workers=None)
 
+semaphore = None
+if MAX_CONTAINERS > 0:
+    semaphore = asyncio.Semaphore(MAX_CONTAINERS)
+
 
 profiles_json_source = 'profiles.json'
 if not os.path.isfile(profiles_json_source):
@@ -34,21 +38,24 @@ with open(profiles_json_source, 'r+') as profile_js:
     if profiles_json_source.split("_", 1)[-1] == 'example.json':
         profiles = {'default': profiles['default']}
 
-print(profiles)
-
 
 epicbox.configure(
     profiles=[epicbox.Profile(name, 'pytg', **profile['profile'])
               for name, profile in profiles.items()])
 
 
-async def uexec(code, profile='default'):
+async def _uexec(code, profile='default'):
     files = [{'name': 'main.py', 'content': str.encode(code)}]
     if profile not in profiles.keys():
         profile = 'default'
     result = await loop.run_in_executor(executor=thread_pool, func=partial(epicbox.run, profile, 'pypy3 main.py', files=files, limits=profiles[profile]['limits']))
     return result
 
+async def uexec(code, profile='default'):
+    if semaphore:
+        async with semaphore:
+            return await _uexec(code, profile)
+    return await _uexec(code, profile)
 
 def _format_result(result):
     stdout = result['stdout'].decode()
