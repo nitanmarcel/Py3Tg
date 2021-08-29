@@ -46,7 +46,7 @@ async def uexec(code, profile='default'):
     files = [{'name': 'main.py', 'content': str.encode(code)}]
     if profile not in profiles.keys():
         profile = 'default'
-    result = await loop.run_in_executor(executor=thread_pool, func=partial(epicbox.run, profile, 'python main.py', files=files, limits=profiles[profile]['limits']))
+    result = await loop.run_in_executor(executor=thread_pool, func=partial(epicbox.run, profile, 'pypy3 main.py', files=files, limits=profiles[profile]['limits']))
     return result
 
 

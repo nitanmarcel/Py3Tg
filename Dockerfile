@@ -1,4 +1,4 @@
-FROM python:3.9.6-alpine
+FROM jamiehewland/alpine-pypy:alpine3.11
 
 RUN adduser -DH -h /sandbox sandbox
 
