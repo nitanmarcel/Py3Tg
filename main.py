@@ -100,7 +100,7 @@ def _format_result(result):
             stderr = error_template.format(
                 error='RuntimeError: Memory threshold exceeded.')
 
-    return stdout or stderr, success, duration, exit_code, duration, timeout, oom_killed
+    return stdout or stderr, success, duration, exit_code, timeout, oom_killed
 
 
 async def main():
@@ -128,7 +128,7 @@ async def main():
             stats_id = str(msg.id) + str(event.chat_id)
 
             result = await uexec(code, profile=str(event.sender_id))
-            parsed_result, status, duration, exit_code, duration, timeout, oom_killed = _format_result(
+            parsed_result, status, duration, exit_code, timeout, oom_killed = _format_result(
                 result)
 
             stats[stats_id] = {'exit_code': exit_code, 'duration': duration,
@@ -146,7 +146,7 @@ async def main():
             if code:
                 stats_id = str(event.id) + str(event.chat_id)
                 result = await uexec(code, profile=str(event.sender_id))
-                parsed_result, status, duration,  exit_code, duration, timeout, oom_killed = _format_result(
+                parsed_result, status, duration,  exit_code, timeout, oom_killed = _format_result(
                     result)
 
                 stats[stats_id] = {'exit_code': exit_code, 'duration': duration,
