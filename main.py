@@ -24,7 +24,7 @@ remote_dockerfile = r.read()
 
 with open("Dockerfile", "r") as dockerfile:
     if hash(dockerfile.read()) != hash(remote_dockerfile):
-        logger.error("Current Dockerfile not the same as the one in the github repo. To continue update the Dockerfile by pulling the latest changes and rebuild the container.")
+        logger.error("Current Dockerfile is not the same as the one in the github repo, which might affect the security or the functionality of this app. To continue update the Dockerfile by pulling the latest changes and rebuilding the container.")
         quit(0)
 
 client = TelegramClient(None, API_ID, API_HASH)
