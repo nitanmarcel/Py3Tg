@@ -7,7 +7,6 @@ import os
 import shutil
 import epicbox
 
-
 from concurrent.futures import ThreadPoolExecutor
 from functools import partial
 from config import API_HASH, API_ID, BOT_TOKEN, MAX_CONTAINERS
