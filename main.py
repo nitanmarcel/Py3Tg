@@ -4,9 +4,9 @@ import json
 import logging
 import re
 import os
+import shutil
 import epicbox
 
-import urllib.request
 
 from concurrent.futures import ThreadPoolExecutor
 from functools import partial
@@ -17,18 +17,24 @@ from telethon.tl.custom import Button
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-dockerfile_raw_url = "https://raw.githubusercontent.com/nitanmarcel/Py3Tg/main/Dockerfile"
-
-r = urllib.request.urlopen(dockerfile_raw_url)
-remote_dockerfile = r.read()
-
-with open("Dockerfile", "r") as dockerfile:
-    if hash(dockerfile.read()) != hash(remote_dockerfile):
-        logger.error("Current Dockerfile is not the same as the one in the github repo, which might affect the security or the functionality of this app. To continue update the Dockerfile by pulling the latest changes and rebuilding the container.")
-        quit(0)
-
 client = TelegramClient(None, API_ID, API_HASH)
 client.parse_mode = 'html'
+
+if not bool(shutil.which('docker')):
+    logger.error(
+        "Docker is not installed. Please first install it using your system's package manager then run this script again!")
+    quit(0)
+
+else:
+    import docker
+    from docker.errors import DockerException
+    logger.info("Pulling the latest docker image.")
+    try:
+        docker.from_env().images.pull("nitanmarcel/py3tg:latest")
+    except DockerException as docker_exc:
+        logger.error(
+            "Failed to pull the latest docker image. Make sure docker is up and running then try again: " + str(docker_exc))
+        quit(0)
 
 
 loop = asyncio.get_event_loop()
@@ -52,7 +58,7 @@ with open(profiles_json_source, 'r+') as profile_js:
 
 
 epicbox.configure(
-    profiles=[epicbox.Profile(name, 'pytg', **profile['profile'])
+    profiles=[epicbox.Profile(name, 'nitanmarcel/py3tg:latest', **profile['profile'])
               for name, profile in profiles.items()])
 
 
