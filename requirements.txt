@@ -1,2 +1,2 @@
-Telethon==1.24.0
+Telethon==1.25.1
 epicbox==1.1.0
